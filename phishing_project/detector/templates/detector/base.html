@@ -1,0 +1,125 @@
+<!-- detector/templates/detector/base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Phishing Shield System{% endblock %}</title>
+    <style>
+        /* Global Project Theme Setup */
+        :root {
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navigation Bar Component */
+        .navbar {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid #334155;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .navbar-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* Main Workspace Container Wrapper */
+        .main-container {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+            box-sizing: border-box;
+        }
+
+        /* System Footer Section Component */
+        .footer {
+            background-color: var(--bg-card);
+            border-top: 1px solid #334155;
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+    </style>
+    <!-- Hook insertion point to inject secondary local view page styles if required -->
+     <link rel="stylesheet" href="{% static 'detector/css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- 1. System Navigation Element -->
+    <nav class="navbar">
+        <a href="{% url 'detector:url_checker' %}" class="navbar-brand">
+            🛡️ Phishing Protection Hub
+        </a>
+        <div class="navbar-links">
+            <a href="{% url 'detector:url_checker' %}">URL Security Checker</a>
+            <a href="{% url 'detector:dashboard' %}">Performance Dashboard</a>
+        </div>
+    </nav>
+
+    <!-- 2. Dynamic Child View Ingestion Point -->
+    <main class="main-container">
+        {% block content %}
+        <!-- Child page code will inject right here -->
+        {% endblock %}
+    </main>
+
+    <!-- 3. System Footer Element -->
+    <footer class="footer">
+        &copy; Phishing Detection and Prevention System Framework — Capstone Project Sandbox
+    </footer>
+
+    <!-- Hook insertion point to load individual page custom scripts if required -->
+    {% block extra_js %}
+    <script src="{% static 'detector/js/charts.js' %}"></script>
+    {% endblock %}
+
+</body>
+</html>

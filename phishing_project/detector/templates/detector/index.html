@@ -1,0 +1,171 @@
+<!-- detector/templates/detector/index.html -->
+{% extends 'detector/base.html' %}
+
+{% block title %}URL Threat Analyzer | Phishing Detection System{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Content Layout Card Grid */
+    .analyzer-card {
+        background-color: var(--bg-card);
+        border: 1px solid #334155;
+        border-radius: 8px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .card-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .card-header h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.75rem;
+        color: #fff;
+    }
+
+    .card-header p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+
+    /* Core Form Input Components */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-muted);
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 0.85rem 1rem;
+        background-color: var(--bg-main);
+        border: 1px solid #475569;
+        border-radius: 6px;
+        color: #fff;
+        font-size: 1rem;
+        box-sizing: border-box;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .input-field:focus {
+        outline: none;
+        border-color: var(--accent-blue);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    }
+
+    .submit-btn {
+        background-color: var(--accent-blue);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 0.85rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        transition: background-color 0.2s ease;
+    }
+
+    .submit-btn:hover {
+        background-color: #2563eb;
+    }
+
+    /* Threat Evaluation Results Block */
+    .result-container {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        border-radius: 6px;
+        border: 1px solid transparent;
+    }
+
+    .result-container.Safe {
+        background-color: rgba(16, 185, 129, 0.1);
+        border-color: var(--accent-green);
+    }
+
+    .result-container.Phishing {
+        background-color: rgba(239, 68, 68, 0.1);
+        border-color: var(--accent-red);
+    }
+
+    .result-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: bold;
+        font-size: 1.15rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .result-container.Safe .result-title { color: var(--accent-green); }
+    .result-container.Phishing .result-title { color: var(--accent-red); }
+
+    .result-meta {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        word-break: break-all;
+    }
+    
+    .result-meta strong {
+        color: #fff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="analyzer-card">
+    <div class="card-header">
+        <h2>Phishing Threat Detection Portal</h2>
+        <p>Input a suspicious website domain URL or email asset payload link to scan for malicious indicators.</p>
+    </div>
+
+    <!-- Processing Form Interface Context -->
+    <form method="POST" action="{% url 'detector:url_checker' %}">
+        {% csrf_token %} <!-- Mandatory security handshake parameter checking token injection -->
+        
+        <div class="form-group">
+            <label for="url_input">Target Resource URL / Inbound Payload String</label>
+            <input 
+                type="text" 
+                id="url_input" 
+                name="url_input" 
+                class="input-field" 
+                placeholder="e.g., http://verify-account.com" 
+                value="{{ scanned_url|default_if_none:'' }}" 
+                required
+            >
+        </div>
+
+        <button type="submit" class="submit-btn">Run Engine Classification</button>
+    </form>
+
+    <!-- Contextual Response Template Pipeline Rendering Block -->
+    {% if classification %}
+        <div class="result-container {{ classification }}">
+            <div class="result-title">
+                {% if classification == "Safe" %}
+                    🟢 Threat Assessment Status: Safe Website
+                {% else %}
+                    🔴 Threat Assessment Status: Malicious Vector/Phishing Detected
+                {% endif %}
+            </div>
+            <div class="result-meta">
+                Evaluated Target Signature: <strong>{{ scanned_url }}</strong>
+                <br>
+                <em>Decision Engine calculated classification array parameters via background operational models.</em>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
